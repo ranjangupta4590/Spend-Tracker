@@ -1,6 +1,8 @@
 # Environments & Secrets
 .env
 .env.local
+.env.production
+production-env
 *.env
 
 # Python artifacts

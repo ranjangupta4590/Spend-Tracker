@@ -1,0 +1,48 @@
+services:
+  # PostgreSQL Production Database Service
+  db:
+    image: postgres:16-alpine
+    container_name: spend_tracker_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-spend_tracker_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-spend_tracker_password}
+      POSTGRES_DB: ${POSTGRES_DB:-spend_tracker_db}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-spend_tracker_user} -d ${POSTGRES_DB:-spend_tracker_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - spend_tracker_net
+
+  # Spend Tracker Application Service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spend_tracker_app
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${APP_PORT:-8080}:8000"
+    env_file:
+      - .env
+    environment:
+      # Internal Docker network connection to PostgreSQL service
+      - DATABASE_URL=${DATABASE_URL:-postgresql://spend_tracker_user:spend_tracker_password@db:5432/spend_tracker_db}
+    networks:
+      - spend_tracker_net
+
+volumes:
+  postgres_data:
+    name: spend_tracker_postgres_data
+
+networks:
+  spend_tracker_net:
+    name: spend_tracker_network
