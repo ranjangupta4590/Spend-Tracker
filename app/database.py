@@ -5,19 +5,23 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker, Session
 from app.config import settings
 
+db_url = settings.database_url
+if db_url.startswith("postgres://"):
+    db_url = db_url.replace("postgres://", "postgresql://", 1)
+
 # Ensure sqlite directory exists if local file path is used
-if settings.database_url.startswith("sqlite:///"):
-    db_path = settings.database_url.replace("sqlite:///", "")
+if db_url.startswith("sqlite:///"):
+    db_path = db_url.replace("sqlite:///", "")
     if db_path and db_path != ":memory:":
         parent_dir = Path(db_path).parent
         parent_dir.mkdir(parents=True, exist_ok=True)
 
 connect_args = {}
-if settings.database_url.startswith("sqlite"):
+if db_url.startswith("sqlite"):
     connect_args = {"check_same_thread": False}
 
 engine = create_engine(
-    settings.database_url,
+    db_url,
     connect_args=connect_args,
     future=True,
 )
@@ -43,7 +47,7 @@ def get_db() -> Generator[Session, None, None]:
 def init_db() -> None:
     Base.metadata.create_all(bind=engine)
     # Automatic migration for existing SQLite databases missing user_id
-    if settings.database_url.startswith("sqlite"):
+    if db_url.startswith("sqlite"):
         with engine.connect() as conn:
             try:
                 from sqlalchemy import text
