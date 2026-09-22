@@ -51,6 +51,45 @@ pipeline {
                 '''
             }
         }
+
+        stage('Deploy Spend Tracker') {
+            steps {
+                echo 'Deploying Spend Tracker locally on EC2...'
+
+                withCredentials([
+                    file(credentialsId: ENV_CREDENTIAL_ID, variable: 'PROD_ENV_FILE')
+                ]) {
+                    sh '''
+                        echo "Preparing deployment directory..."
+                        mkdir -p "${DEPLOY_DIR}"
+
+                        echo "Copying application files..."
+                        tar --exclude='.git' \
+                            --exclude='.pytest_cache' \
+                            --exclude='__pycache__' \
+                            --exclude='data' \
+                            --exclude='venv' \
+                            --exclude='.test_venv' \
+                            --exclude='.env' \
+                            --exclude='production-env' \
+                            -czf - . | tar -xzf - -C "${DEPLOY_DIR}"
+
+                        echo "Installing production environment file..."
+                        cp "${PROD_ENV_FILE}" "${DEPLOY_DIR}/.env"
+                        chmod 600 "${DEPLOY_DIR}/.env"
+
+                        echo "Building and starting Spend Tracker..."
+                        cd "${DEPLOY_DIR}"
+
+                        docker compose -f docker-compose.prod.yml up -d --build
+
+                        echo "Checking Spend Tracker containers..."
+                        docker compose -f docker-compose.prod.yml ps
+                    '''
+                }
+            }
+        }
+
         stage('Smoke Test & Health Check') {
             steps {
                 echo 'Verifying application health...'
