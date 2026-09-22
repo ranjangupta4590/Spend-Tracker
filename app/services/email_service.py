@@ -77,22 +77,29 @@ class EmailService:
                 return True
 
             logger.info("Attempting to send verification email to %s via %s:%s", recipient_email, settings.smtp_host, settings.smtp_port)
-            if settings.smtp_use_tls:
-                with smtplib.SMTP(settings.smtp_host, settings.smtp_port, timeout=5) as server:
+            if settings.smtp_port == 465:
+                # SSL Direct (Port 465)
+                with smtplib.SMTP_SSL(settings.smtp_host, settings.smtp_port, timeout=15) as server:
+                    if settings.smtp_username and settings.smtp_password:
+                        server.login(settings.smtp_username, settings.smtp_password)
+                    server.send_message(msg)
+            elif settings.smtp_use_tls:
+                # STARTTLS (Port 587)
+                with smtplib.SMTP(settings.smtp_host, settings.smtp_port, timeout=15) as server:
                     server.starttls()
                     if settings.smtp_username and settings.smtp_password:
                         server.login(settings.smtp_username, settings.smtp_password)
                     server.send_message(msg)
             else:
-                with smtplib.SMTP(settings.smtp_host, settings.smtp_port, timeout=5) as server:
+                with smtplib.SMTP(settings.smtp_host, settings.smtp_port, timeout=15) as server:
                     if settings.smtp_username and settings.smtp_password:
                         server.login(settings.smtp_username, settings.smtp_password)
                     server.send_message(msg)
             logger.info("Verification email successfully sent to %s", recipient_email)
             return True
         except Exception as e:
-            # In dev/test or when SMTP server is unreachable, log warning without breaking user signup
-            logger.warning("SMTP email sending failed to %s: %s. Link: %s", recipient_email, e, verification_link)
+            # In cloud environments or when SMTP is blocked/misconfigured, log detailed diagnostics with verification link
+            logger.error("SMTP email sending failed to %s: %s. Link: %s", recipient_email, e, verification_link, exc_info=True)
             return False
 
 
