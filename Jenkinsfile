@@ -31,7 +31,10 @@ pipeline {
                     if command -v docker &> /dev/null; then
                         echo "Running tests in isolated Docker container..."
                         docker build -t spend-tracker-test:latest .
-                        docker run --rm -e PYTHONPATH=. spend-tracker-test:latest pytest -v
+                        docker run --rm \
+                            -e PYTHONPATH=/app \
+                            spend-tracker-test:latest \
+                            pytest -v /app/tests                    
                     elif [ -d "venv" ]; then
                         echo "Running tests in existing virtual environment..."
                         . venv/bin/activate

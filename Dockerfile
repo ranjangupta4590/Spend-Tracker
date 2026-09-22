@@ -16,6 +16,7 @@ RUN mkdir -p /app/data
 # Copy application and frontend code
 COPY app/ /app/app/
 COPY frontend/ /app/frontend/
+COPY tests/ /app/tests/
 COPY .env.example /app/.env.example
 
 EXPOSE 8000
