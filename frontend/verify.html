@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Email Verification — SpendTrack</title>
+  <meta name="description" content="Verify your SpendTrack account email address."/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"/>
+  <style>
+    @layer base {
+      html, body { margin: 0; padding: 0; }
+      body { overscroll-behavior: none; }
+    }
+  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "secondary": "#006a61",
+            "background": "#faf8ff",
+            "surface-container-highest": "#dae2fd",
+            "on-background": "#131b2e",
+            "surface-container-lowest": "#ffffff",
+            "surface-variant": "#dae2fd",
+            "error-container": "#ffdad6",
+            "on-surface": "#131b2e",
+            "surface-bright": "#faf8ff",
+            "outline-variant": "#bdc9c6",
+            "surface-container": "#eaedff",
+            "primary": "#005c55",
+            "primary-container": "#0f766e",
+            "on-surface-variant": "#3e4947",
+            "surface": "#faf8ff",
+            "surface-container-high": "#e2e7ff",
+            "outline": "#6e7977",
+            "secondary-container": "#86f2e4",
+            "on-secondary-container": "#006f66",
+            "on-primary": "#ffffff",
+            "surface-container-low": "#f2f3ff",
+            "error": "#ba1a1a",
+            "on-error-container": "#93000a"
+          },
+          fontFamily: {
+            "headline-lg": ["Hanken Grotesk"],
+            "headline-sm": ["Hanken Grotesk"],
+            "body-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "body-sm": ["Inter"],
+            "label-sm": ["Inter"],
+            "label-md": ["Inter"],
+            "tabular-numeric": ["JetBrains Mono"]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen flex flex-col justify-between antialiased selection:bg-secondary-container selection:text-on-secondary-container">
+
+  <!-- Header -->
+  <header class="w-full bg-surface-container-lowest/80 backdrop-blur-md border-b border-surface-container py-3 px-6">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-on-primary shadow-sm">
+          <span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+        </div>
+        <span class="font-headline-sm text-lg font-bold text-on-surface tracking-tight">SpendTrack</span>
+      </div>
+      <div>
+        <a href="/login" class="text-secondary font-label-md font-medium hover:underline flex items-center gap-1">
+          Back to Login
+          <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Verification Card Container -->
+  <main class="flex-1 flex items-center justify-center px-4 py-12">
+    <div class="w-full max-w-md bg-surface-container-lowest border border-outline-variant/30 rounded-2xl shadow-xl p-8 text-center transition-all">
+
+      <!-- Loading State -->
+      <div id="loadingState" class="space-y-4 py-8">
+        <div class="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
+        <h2 class="font-headline-sm text-xl font-bold text-on-surface">Verifying Your Email</h2>
+        <p class="font-body-sm text-on-surface-variant text-sm">Please wait while we validate your token...</p>
+      </div>
+
+      <!-- Success State -->
+      <div id="successState" class="hidden space-y-4 py-4">
+        <div class="w-16 h-16 mx-auto rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center">
+          <span class="material-symbols-outlined text-[36px]">verified</span>
+        </div>
+        <h2 class="font-headline-sm text-2xl font-bold text-on-surface">Email Verified!</h2>
+        <p class="font-body-sm text-on-surface-variant text-sm">
+          Your email address has been successfully verified. You can now log in to your account and begin managing your expenses.
+        </p>
+        <div class="pt-4">
+          <a
+            href="/login"
+            class="inline-flex w-full py-3 px-4 bg-primary hover:bg-primary-container text-on-primary rounded-xl font-label-md font-semibold items-center justify-center gap-2 shadow-md transition-all active:scale-[0.98]"
+          >
+            <span class="material-symbols-outlined text-[20px]">login</span>
+            <span>Proceed to Login</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Error State -->
+      <div id="errorState" class="hidden space-y-4 py-4">
+        <div class="w-16 h-16 mx-auto rounded-full bg-error-container text-on-error-container flex items-center justify-center">
+          <span class="material-symbols-outlined text-[36px]">cancel</span>
+        </div>
+        <h2 class="font-headline-sm text-2xl font-bold text-on-surface">Verification Failed</h2>
+        <p class="font-body-sm text-on-surface-variant text-sm" id="errorMessage">
+          The verification link is invalid, expired, or has already been used.
+        </p>
+        <div class="pt-4 flex flex-col gap-2">
+          <a
+            href="/login"
+            class="inline-flex w-full py-2.5 px-4 bg-primary hover:bg-primary-container text-on-primary rounded-xl font-label-md font-semibold items-center justify-center gap-2 shadow-sm transition-all"
+          >
+            Go to Login
+          </a>
+          <a
+            href="/signup"
+            class="inline-flex w-full py-2.5 px-4 bg-surface-container hover:bg-surface-container-high text-on-surface rounded-xl font-label-md font-medium items-center justify-center gap-2 transition-all"
+          >
+            Create a New Account
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="py-4 text-center text-xs text-on-surface-variant border-t border-surface-container/60">
+    © 2026 SpendTrack
+  </footer>
+
+  <script>
+    async function verifyToken() {
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get("token");
+
+      if (!token) {
+        document.getElementById("loadingState").classList.add("hidden");
+        document.getElementById("errorMessage").textContent = "No verification token provided in the link.";
+        document.getElementById("errorState").classList.remove("hidden");
+        return;
+      }
+
+      try {
+        const response = await fetch(`/auth/verify-email?token=${encodeURIComponent(token)}`);
+        const data = await response.json();
+
+        document.getElementById("loadingState").classList.add("hidden");
+
+        if (response.ok) {
+          document.getElementById("successState").classList.remove("hidden");
+        } else {
+          document.getElementById("errorMessage").textContent = data.detail || "Unable to verify email address.";
+          document.getElementById("errorState").classList.remove("hidden");
+        }
+      } catch (err) {
+        document.getElementById("loadingState").classList.add("hidden");
+        document.getElementById("errorMessage").textContent = "Network error while validating token.";
+        document.getElementById("errorState").classList.remove("hidden");
+      }
+    }
+
+    verifyToken();
+  </script>
+</body>
+</html>

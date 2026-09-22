@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Log In — SpendTrack</title>
+  <meta name="description" content="Sign in to your SpendTrack account to manage expenses and view financial insights."/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"/>
+  <style>
+    @layer base {
+      html, body { margin: 0; padding: 0; }
+      body { overscroll-behavior: none; }
+    }
+  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "secondary": "#006a61",
+            "background": "#faf8ff",
+            "surface-container-highest": "#dae2fd",
+            "on-background": "#131b2e",
+            "surface-container-lowest": "#ffffff",
+            "surface-variant": "#dae2fd",
+            "error-container": "#ffdad6",
+            "on-surface": "#131b2e",
+            "surface-bright": "#faf8ff",
+            "outline-variant": "#bdc9c6",
+            "surface-container": "#eaedff",
+            "primary": "#005c55",
+            "primary-container": "#0f766e",
+            "on-surface-variant": "#3e4947",
+            "surface": "#faf8ff",
+            "surface-container-high": "#e2e7ff",
+            "outline": "#6e7977",
+            "secondary-container": "#86f2e4",
+            "on-secondary-container": "#006f66",
+            "on-primary": "#ffffff",
+            "surface-container-low": "#f2f3ff",
+            "error": "#ba1a1a",
+            "on-error-container": "#93000a"
+          },
+          fontFamily: {
+            "headline-lg": ["Hanken Grotesk"],
+            "headline-sm": ["Hanken Grotesk"],
+            "body-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "body-sm": ["Inter"],
+            "label-sm": ["Inter"],
+            "label-md": ["Inter"],
+            "tabular-numeric": ["JetBrains Mono"]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen flex flex-col justify-between antialiased selection:bg-secondary-container selection:text-on-secondary-container">
+
+  <!-- Top Simple Navigation -->
+  <header class="w-full bg-surface-container-lowest/80 backdrop-blur-md border-b border-surface-container py-3 px-6">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-on-primary shadow-sm">
+          <span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+        </div>
+        <span class="font-headline-sm text-lg font-bold text-on-surface tracking-tight">SpendTrack</span>
+      </div>
+      <div>
+        <a href="/signup" class="text-secondary font-label-md font-medium hover:underline flex items-center gap-1">
+          Create Account
+          <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Login Card Container -->
+  <main class="flex-1 flex items-center justify-center px-4 py-12">
+    <div class="w-full max-w-md bg-surface-container-lowest border border-outline-variant/30 rounded-2xl shadow-xl p-8 transition-all">
+      <div class="text-center mb-8">
+        <div class="inline-flex w-12 h-12 rounded-xl bg-secondary-container text-on-secondary-container items-center justify-center mb-3">
+          <span class="material-symbols-outlined text-[28px]">lock_open</span>
+        </div>
+        <h1 class="font-headline-lg text-2xl font-bold text-on-surface">Welcome back</h1>
+        <p class="font-body-sm text-on-surface-variant text-sm mt-1">Sign in to access your spend tracker dashboard</p>
+      </div>
+
+      <!-- Alert Box -->
+      <div id="loginAlert" class="hidden mb-6 p-4 rounded-xl text-sm flex items-start gap-3">
+        <span class="material-symbols-outlined text-[20px] shrink-0" id="loginAlertIcon">info</span>
+        <div class="flex-1" id="loginAlertMessage"></div>
+      </div>
+
+      <form id="loginForm" class="space-y-5" onsubmit="handleLogin(event)">
+        <!-- Email Field -->
+        <div>
+          <label for="loginEmail" class="block font-label-sm text-label-sm font-semibold text-on-surface mb-1.5">
+            Email Address
+          </label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-on-surface-variant">
+              <span class="material-symbols-outlined text-[20px]">mail</span>
+            </span>
+            <input
+              type="email"
+              id="loginEmail"
+              required
+              autocomplete="email"
+              placeholder="you@example.com"
+              class="w-full pl-10 pr-4 py-2.5 bg-surface-container-low border border-outline-variant/40 rounded-xl text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm transition-all"
+            />
+          </div>
+        </div>
+
+        <!-- Password Field with Show/Hide Eye Toggle -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label for="loginPassword" class="block font-label-sm text-label-sm font-semibold text-on-surface">
+              Password
+            </label>
+          </div>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-on-surface-variant">
+              <span class="material-symbols-outlined text-[20px]">key</span>
+            </span>
+            <input
+              type="password"
+              id="loginPassword"
+              required
+              autocomplete="current-password"
+              placeholder="••••••••"
+              class="w-full pl-10 pr-11 py-2.5 bg-surface-container-low border border-outline-variant/40 rounded-xl text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm transition-all"
+            />
+            <button
+              type="button"
+              id="togglePasswordBtn"
+              onclick="togglePasswordVisibility('loginPassword', 'eyeIconLogin')"
+              class="absolute inset-y-0 right-0 flex items-center pr-3 text-on-surface-variant hover:text-on-surface transition-colors"
+              title="Show or hide password"
+            >
+              <span class="material-symbols-outlined text-[20px]" id="eyeIconLogin">visibility</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          id="loginSubmitBtn"
+          class="w-full py-3 px-4 bg-primary hover:bg-primary-container text-on-primary rounded-xl font-label-md font-semibold flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <span class="material-symbols-outlined text-[20px]" id="loginBtnIcon">login</span>
+          <span id="loginBtnText">Sign In</span>
+        </button>
+      </form>
+
+      <!-- Divider & Signup Link -->
+      <div class="mt-8 pt-6 border-t border-surface-container text-center text-sm text-on-surface-variant font-body-sm">
+        Don't have an account yet?
+        <a href="/signup" class="text-secondary font-semibold hover:underline ml-1">Create an account</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="py-4 text-center text-xs text-on-surface-variant border-t border-surface-container/60">
+    © 2026 SpendTrack
+  </footer>
+
+  <script>
+    // Redirect if already authenticated
+    if (localStorage.getItem("spendtrack_token")) {
+      window.location.href = "/";
+    }
+
+    function togglePasswordVisibility(inputId, iconId) {
+      const input = document.getElementById(inputId);
+      const icon = document.getElementById(iconId);
+      if (input.type === "password") {
+        input.type = "text";
+        icon.textContent = "visibility_off";
+      } else {
+        input.type = "password";
+        icon.textContent = "visibility";
+      }
+    }
+
+    function showAlert(message, type = "error") {
+      const alertBox = document.getElementById("loginAlert");
+      const alertIcon = document.getElementById("loginAlertIcon");
+      const alertMessage = document.getElementById("loginAlertMessage");
+
+      alertBox.classList.remove("hidden", "bg-error-container", "text-on-error-container", "bg-secondary-container", "text-on-secondary-container");
+
+      if (type === "error") {
+        alertBox.classList.add("bg-error-container", "text-on-error-container");
+        alertIcon.textContent = "error";
+      } else {
+        alertBox.classList.add("bg-secondary-container", "text-on-secondary-container");
+        alertIcon.textContent = "info";
+      }
+
+      alertMessage.innerHTML = message;
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value;
+      const submitBtn = document.getElementById("loginSubmitBtn");
+      const btnText = document.getElementById("loginBtnText");
+
+      submitBtn.disabled = true;
+      btnText.textContent = "Signing In...";
+
+      try {
+        const response = await fetch("/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          localStorage.setItem("spendtrack_token", data.access_token);
+          // Fetch current user details to cache email
+          try {
+            const userRes = await fetch("/auth/me", {
+              headers: { "Authorization": `Bearer ${data.access_token}` }
+            });
+            if (userRes.ok) {
+              const userData = await userRes.json();
+              localStorage.setItem("spendtrack_user", JSON.stringify(userData));
+            }
+          } catch (_) {}
+
+          showAlert("Login successful! Redirecting...", "success");
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 400);
+        } else {
+          let errorMsg = data.detail || "Unable to sign in. Please verify your credentials.";
+          if (response.status === 403) {
+            errorMsg = `<strong>Email Not Verified:</strong> ${errorMsg}`;
+          }
+          showAlert(errorMsg, "error");
+        }
+      } catch (err) {
+        showAlert("Network error connecting to the authentication service.", "error");
+      } finally {
+        submitBtn.disabled = false;
+        btnText.textContent = "Sign In";
+      }
+    }
+  </script>
+</body>
+</html>

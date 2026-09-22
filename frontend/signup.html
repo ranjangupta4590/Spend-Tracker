@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Sign Up — SpendTrack</title>
+  <meta name="description" content="Create an account to start tracking expenses and viewing spending insights."/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"/>
+  <style>
+    @layer base {
+      html, body { margin: 0; padding: 0; }
+      body { overscroll-behavior: none; }
+    }
+  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "secondary": "#006a61",
+            "background": "#faf8ff",
+            "surface-container-highest": "#dae2fd",
+            "on-background": "#131b2e",
+            "surface-container-lowest": "#ffffff",
+            "surface-variant": "#dae2fd",
+            "error-container": "#ffdad6",
+            "on-surface": "#131b2e",
+            "surface-bright": "#faf8ff",
+            "outline-variant": "#bdc9c6",
+            "surface-container": "#eaedff",
+            "primary": "#005c55",
+            "primary-container": "#0f766e",
+            "on-surface-variant": "#3e4947",
+            "surface": "#faf8ff",
+            "surface-container-high": "#e2e7ff",
+            "outline": "#6e7977",
+            "secondary-container": "#86f2e4",
+            "on-secondary-container": "#006f66",
+            "on-primary": "#ffffff",
+            "surface-container-low": "#f2f3ff",
+            "error": "#ba1a1a",
+            "on-error-container": "#93000a"
+          },
+          fontFamily: {
+            "headline-lg": ["Hanken Grotesk"],
+            "headline-sm": ["Hanken Grotesk"],
+            "body-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "body-sm": ["Inter"],
+            "label-sm": ["Inter"],
+            "label-md": ["Inter"],
+            "tabular-numeric": ["JetBrains Mono"]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen flex flex-col justify-between antialiased selection:bg-secondary-container selection:text-on-secondary-container">
+
+  <!-- Top Simple Navigation -->
+  <header class="w-full bg-surface-container-lowest/80 backdrop-blur-md border-b border-surface-container py-3 px-6">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-on-primary shadow-sm">
+          <span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+        </div>
+        <span class="font-headline-sm text-lg font-bold text-on-surface tracking-tight">SpendTrack</span>
+      </div>
+      <div>
+        <a href="/login" class="text-secondary font-label-md font-medium hover:underline flex items-center gap-1">
+          Already have an account? Log In
+          <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Signup Card Container -->
+  <main class="flex-1 flex items-center justify-center px-4 py-12">
+    <div class="w-full max-w-md bg-surface-container-lowest border border-outline-variant/30 rounded-2xl shadow-xl p-8 transition-all">
+      <div class="text-center mb-8">
+        <div class="inline-flex w-12 h-12 rounded-xl bg-secondary-container text-on-secondary-container items-center justify-center mb-3">
+          <span class="material-symbols-outlined text-[28px]">person_add</span>
+        </div>
+        <h1 class="font-headline-lg text-2xl font-bold text-on-surface">Create an Account</h1>
+        <p class="font-body-sm text-on-surface-variant text-sm mt-1">Start tracking and optimizing your personal expenses</p>
+      </div>
+
+      <!-- Alert Box -->
+      <div id="signupAlert" class="hidden mb-6 p-4 rounded-xl text-sm flex items-start gap-3">
+        <span class="material-symbols-outlined text-[20px] shrink-0" id="signupAlertIcon">info</span>
+        <div class="flex-1" id="signupAlertMessage"></div>
+      </div>
+
+      <!-- Success State Box -->
+      <div id="signupSuccessContainer" class="hidden text-center space-y-4 py-4">
+        <div class="w-16 h-16 mx-auto rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center">
+          <span class="material-symbols-outlined text-[36px]">mark_email_read</span>
+        </div>
+        <h2 class="font-headline-sm text-xl font-bold text-on-surface">Check Your Email</h2>
+        <p class="font-body-sm text-on-surface-variant text-sm" id="signupSuccessText">
+          We have sent a verification link to your email address. Please click the link to activate your account and proceed to log in.
+        </p>
+        <div class="pt-4">
+          <a
+            href="/login"
+            class="inline-flex w-full py-3 px-4 bg-primary hover:bg-primary-container text-on-primary rounded-xl font-label-md font-semibold items-center justify-center gap-2 shadow-md transition-all"
+          >
+            <span class="material-symbols-outlined text-[20px]">login</span>
+            <span>Go to Login</span>
+          </a>
+        </div>
+      </div>
+
+      <form id="signupForm" class="space-y-4" onsubmit="handleSignup(event)">
+        <!-- Email Field -->
+        <div>
+          <label for="signupEmail" class="block font-label-sm text-label-sm font-semibold text-on-surface mb-1.5">
+            Email Address
+          </label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-on-surface-variant">
+              <span class="material-symbols-outlined text-[20px]">mail</span>
+            </span>
+            <input
+              type="email"
+              id="signupEmail"
+              required
+              autocomplete="email"
+              placeholder="you@example.com"
+              class="w-full pl-10 pr-4 py-2.5 bg-surface-container-low border border-outline-variant/40 rounded-xl text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm transition-all"
+            />
+          </div>
+        </div>
+
+        <!-- Password Field with Show/Hide Eye Toggle -->
+        <div>
+          <label for="signupPassword" class="block font-label-sm text-label-sm font-semibold text-on-surface mb-1.5">
+            Password
+          </label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-on-surface-variant">
+              <span class="material-symbols-outlined text-[20px]">lock</span>
+            </span>
+            <input
+              type="password"
+              id="signupPassword"
+              required
+              minlength="8"
+              autocomplete="new-password"
+              placeholder="At least 8 characters"
+              class="w-full pl-10 pr-11 py-2.5 bg-surface-container-low border border-outline-variant/40 rounded-xl text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm transition-all"
+            />
+            <button
+              type="button"
+              id="toggleSignupPasswordBtn"
+              onclick="togglePasswordVisibility('signupPassword', 'eyeIconPassword')"
+              class="absolute inset-y-0 right-0 flex items-center pr-3 text-on-surface-variant hover:text-on-surface transition-colors"
+              title="Show or hide password"
+            >
+              <span class="material-symbols-outlined text-[20px]" id="eyeIconPassword">visibility</span>
+            </button>
+          </div>
+
+          <!-- Real-time Password Requirements Checklist -->
+          <div id="passwordRulesContainer" class="mt-2 p-3 bg-surface-container-low/70 border border-outline-variant/30 rounded-xl space-y-1.5 text-xs">
+            <div class="font-semibold text-on-surface mb-1 text-[11px] uppercase tracking-wider">Password Requirements:</div>
+            <div id="ruleLength" class="flex items-center gap-1.5 text-on-surface-variant transition-colors">
+              <span class="material-symbols-outlined text-[15px]" id="ruleLengthIcon">radio_button_unchecked</span>
+              <span>At least 8 characters</span>
+            </div>
+            <div id="ruleLetter" class="flex items-center gap-1.5 text-on-surface-variant transition-colors">
+              <span class="material-symbols-outlined text-[15px]" id="ruleLetterIcon">radio_button_unchecked</span>
+              <span>At least one letter (a-z, A-Z)</span>
+            </div>
+            <div id="ruleNumber" class="flex items-center gap-1.5 text-on-surface-variant transition-colors">
+              <span class="material-symbols-outlined text-[15px]" id="ruleNumberIcon">radio_button_unchecked</span>
+              <span>At least one number (0-9)</span>
+            </div>
+            <div id="ruleSpecial" class="flex items-center gap-1.5 text-on-surface-variant transition-colors">
+              <span class="material-symbols-outlined text-[15px]" id="ruleSpecialIcon">radio_button_unchecked</span>
+              <span>At least one special character (!@#$%^&*...)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Confirm Password Field with Show/Hide Eye Toggle -->
+        <div>
+          <label for="signupConfirmPassword" class="block font-label-sm text-label-sm font-semibold text-on-surface mb-1.5">
+            Confirm Password
+          </label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-on-surface-variant">
+              <span class="material-symbols-outlined text-[20px]">lock_reset</span>
+            </span>
+            <input
+              type="password"
+              id="signupConfirmPassword"
+              required
+              minlength="8"
+              autocomplete="new-password"
+              placeholder="Re-enter your password"
+              class="w-full pl-10 pr-11 py-2.5 bg-surface-container-low border border-outline-variant/40 rounded-xl text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm transition-all"
+            />
+            <button
+              type="button"
+              id="toggleConfirmPasswordBtn"
+              onclick="togglePasswordVisibility('signupConfirmPassword', 'eyeIconConfirm')"
+              class="absolute inset-y-0 right-0 flex items-center pr-3 text-on-surface-variant hover:text-on-surface transition-colors"
+              title="Show or hide confirm password"
+            >
+              <span class="material-symbols-outlined text-[20px]" id="eyeIconConfirm">visibility</span>
+            </button>
+          </div>
+
+          <!-- Real-time Password Match Feedback -->
+          <div id="passwordMatchFeedback" class="hidden mt-1.5 text-xs font-medium flex items-center gap-1.5 transition-all">
+            <span class="material-symbols-outlined text-[16px]" id="passwordMatchIcon">check_circle</span>
+            <span id="passwordMatchText">Passwords match</span>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          id="signupSubmitBtn"
+          class="w-full mt-2 py-3 px-4 bg-primary hover:bg-primary-container text-on-primary rounded-xl font-label-md font-semibold flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <span class="material-symbols-outlined text-[20px]" id="signupBtnIcon">person_add</span>
+          <span id="signupBtnText">Create Account</span>
+        </button>
+      </form>
+
+      <!-- Divider & Login Link -->
+      <div id="loginLinkContainer" class="mt-8 pt-6 border-t border-surface-container text-center text-sm text-on-surface-variant font-body-sm">
+        Already have an account?
+        <a href="/login" class="text-secondary font-semibold hover:underline ml-1">Log in here</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="py-4 text-center text-xs text-on-surface-variant border-t border-surface-container/60">
+    © 2026 SpendTrack
+  </footer>
+
+  <script>
+    // Redirect if already authenticated
+    if (localStorage.getItem("spendtrack_token")) {
+      window.location.href = "/";
+    }
+
+    function togglePasswordVisibility(inputId, iconId) {
+      const input = document.getElementById(inputId);
+      const icon = document.getElementById(iconId);
+      if (input.type === "password") {
+        input.type = "text";
+        icon.textContent = "visibility_off";
+      } else {
+        input.type = "password";
+        icon.textContent = "visibility";
+      }
+    }
+
+    function showAlert(message, type = "error") {
+      const alertBox = document.getElementById("signupAlert");
+      const alertIcon = document.getElementById("signupAlertIcon");
+      const alertMessage = document.getElementById("signupAlertMessage");
+
+      alertBox.classList.remove("hidden", "bg-error-container", "text-on-error-container", "bg-secondary-container", "text-on-secondary-container");
+
+      if (type === "error") {
+        alertBox.classList.add("bg-error-container", "text-on-error-container");
+        alertIcon.textContent = "error";
+      } else {
+        alertBox.classList.add("bg-secondary-container", "text-on-secondary-container");
+        alertIcon.textContent = "check_circle";
+      }
+
+      alertMessage.innerHTML = message;
+    }
+
+    const passwordInput = document.getElementById("signupPassword");
+    const confirmPasswordInput = document.getElementById("signupConfirmPassword");
+
+    function updateRule(elementId, iconId, isValid) {
+      const elem = document.getElementById(elementId);
+      const icon = document.getElementById(iconId);
+      if (!elem || !icon) return;
+      if (isValid) {
+        elem.classList.remove("text-on-surface-variant");
+        elem.classList.add("text-secondary", "font-medium");
+        icon.textContent = "check_circle";
+        icon.className = "material-symbols-outlined text-[15px] text-secondary";
+      } else {
+        elem.classList.remove("text-secondary", "font-medium");
+        elem.classList.add("text-on-surface-variant");
+        icon.textContent = "radio_button_unchecked";
+        icon.className = "material-symbols-outlined text-[15px] text-on-surface-variant";
+      }
+    }
+
+    function validatePasswordRealtime() {
+      const val = passwordInput.value;
+      const hasLength = val.length >= 8;
+      const hasLetter = /[a-zA-Z]/.test(val);
+      const hasNumber = /[0-9]/.test(val);
+      const hasSpecial = /[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\/;'`~]/.test(val);
+
+      updateRule("ruleLength", "ruleLengthIcon", hasLength);
+      updateRule("ruleLetter", "ruleLetterIcon", hasLetter);
+      updateRule("ruleNumber", "ruleNumberIcon", hasNumber);
+      updateRule("ruleSpecial", "ruleSpecialIcon", hasSpecial);
+
+      validatePasswordMatchRealtime();
+      return hasLength && hasLetter && hasNumber && hasSpecial;
+    }
+
+    function validatePasswordMatchRealtime() {
+      const pass = passwordInput.value;
+      const confirmPass = confirmPasswordInput.value;
+      const feedback = document.getElementById("passwordMatchFeedback");
+      const icon = document.getElementById("passwordMatchIcon");
+      const text = document.getElementById("passwordMatchText");
+
+      if (!confirmPass) {
+        feedback.classList.add("hidden");
+        return false;
+      }
+
+      feedback.classList.remove("hidden");
+      if (pass && pass === confirmPass) {
+        feedback.className = "mt-1.5 text-xs font-medium flex items-center gap-1.5 text-secondary";
+        icon.textContent = "check_circle";
+        icon.className = "material-symbols-outlined text-[16px] text-secondary";
+        text.textContent = "Passwords match";
+        return true;
+      } else {
+        feedback.className = "mt-1.5 text-xs font-medium flex items-center gap-1.5 text-error";
+        icon.textContent = "cancel";
+        icon.className = "material-symbols-outlined text-[16px] text-error";
+        text.textContent = "Passwords do not match";
+        return false;
+      }
+    }
+
+    passwordInput.addEventListener("input", validatePasswordRealtime);
+    confirmPasswordInput.addEventListener("input", validatePasswordMatchRealtime);
+
+    async function handleSignup(e) {
+      e.preventDefault();
+      const email = document.getElementById("signupEmail").value.trim();
+      const password = passwordInput.value;
+      const confirmPassword = confirmPasswordInput.value;
+      const submitBtn = document.getElementById("signupSubmitBtn");
+      const btnText = document.getElementById("signupBtnText");
+
+      if (!validatePasswordRealtime()) {
+        showAlert("Password does not meet all requirements: at least 8 characters, one letter, one number, and one special character.", "error");
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        showAlert("Passwords do not match. Please ensure both fields are identical.", "error");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      btnText.textContent = "Creating Account...";
+
+      try {
+        const response = await fetch("/auth/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email,
+            password,
+            confirm_password: confirmPassword,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // Hide form and show success state
+          document.getElementById("signupForm").classList.add("hidden");
+          document.getElementById("signupAlert").classList.add("hidden");
+          document.getElementById("signupSuccessContainer").classList.remove("hidden");
+          document.getElementById("loginLinkContainer").classList.add("hidden");
+        } else {
+          let errorMsg = data.detail;
+          if (Array.isArray(errorMsg)) {
+            errorMsg = errorMsg.map(err => err.msg).join(", ");
+          }
+          showAlert(errorMsg || "Registration failed. Please try again.", "error");
+        }
+      } catch (err) {
+        showAlert("Network error connecting to the registration service.", "error");
+      } finally {
+        submitBtn.disabled = false;
+        btnText.textContent = "Create Account";
+      }
+    }
+  </script>
+</body>
+</html>

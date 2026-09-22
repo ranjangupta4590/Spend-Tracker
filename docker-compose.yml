@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  spend-tracker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spend_tracker_app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+      - ./app:/app/app
+      - ./frontend:/app/frontend
+    restart: unless-stopped
