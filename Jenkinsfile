@@ -6,7 +6,7 @@ pipeline {
         ENV_CREDENTIAL_ID = "spend-tracker-prod-env"
 
         // Application Port
-        APP_PORT = "8080"
+        APP_PORT = "8081"
     }
 
     parameters {
